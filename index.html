@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>DisneyNOW</title>
+</head>
 <body>
-    <video id="myVideo" width="100%" controls autoplay>
-        <source src="Disney Now App.mp4" type="video/mp4">
+    <!-- 1. The Video Player -->
+    <video id="myVideo" width="100%" height="auto" controls autoplay muted>
+        <!-- Replace 'your-video-link.mp4' with your actual video URL -->
+        <source src="https://drive.google.com/file/d/1J_rF7oUSN3JGEXRIQlCjSGPqCrqsl4kz/view" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <script>
-        document.getElementById('myVideo').onended = function() {
+        // 2. The Redirect Script
+        var video = document.getElementById('myVideo');
+        video.onended = function() {
             window.location.href = "https://disneynow.com";
         };
     </script>
