@@ -1,25 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>DisneyNOW</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: black; }
-        iframe { width: 100vw; height: 100vh; border: none; }
-    </style>
-</head>
-<body>
-    <!-- Use the /preview link here -->
-    <iframe id="videoPlayer" 
-            src="https://drive.google.com/file/d/1J_rF7oUSN3JGEXRIQlCjSGPqCrqsl4kz/preview" 
-            allow="autoplay; fullscreen">
-    </iframe>
+<meta charset="UTF-8">
+<title>DisneyNOW</title>
 
-    <script>
-        // Note: Google Drive previews don't easily signal "onended" to outside code.
-        // You may need to set a timer based on your video's length (e.g., 30000ms = 30s).
-        setTimeout(function() {
-            window.location.href = "https://disneynow.com";
-        }, 16000); // Change 30000 to the length of your video in milliseconds
-    </script>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+  }
+
+  #startScreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  #startScreen img {
+    width: 60%;
+    max-width: 400px;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Splash Image -->
+<div id="startScreen" onclick="startIntro()">
+  <img src="disneynow.png" alt="DisneyNOW">
+</div>
+
+<!-- Video -->
+<video id="introVideo" playsinline>
+  <source src="intro.mp4" type="video/mp4">
+</video>
+
+<script>
+function startIntro() {
+  const screen = document.getElementById('startScreen');
+  const video = document.getElementById('introVideo');
+
+  // Hide splash screen
+  screen.style.display = 'none';
+
+  // Show video
+  video.style.display = 'block';
+
+  // Play with sound
+  video.muted = false;
+  video.play();
+
+  // Redirect after video
+  video.onended = () => {
+    window.location.href = "https://disneynow.com";
+  };
+}
+</script>
+
 </body>
 </html>
