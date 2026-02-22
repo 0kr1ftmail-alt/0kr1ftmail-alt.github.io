@@ -9,16 +9,21 @@
     margin: 0;
     background: black;
     overflow: hidden;
+    font-family: sans-serif;
   }
 
+  /* Splash screen */
   #startScreen {
     position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+    transition: opacity 0.6s ease;
+    z-index: 2;
   }
 
   #startScreen img {
@@ -27,50 +32,102 @@
     object-fit: cover;
   }
 
+  /* Video */
   video {
     position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  /* Skip button */
+  #skipBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
     display: none;
+    z-index: 3;
   }
 </style>
 </head>
 
 <body>
 
-<div id="startScreen" onclick="startIntro()">
-  <img src="disneynow.png">
+<!-- Splash -->
+<div id="startScreen">
+  <img src="disneynow.png" alt="Tap to Start">
 </div>
 
-<video id="introVideo" playsinline preload="auto">
+<!-- Video -->
+<video id="introVideo" playsinline webkit-playsinline preload="auto">
   <source src="intro.mp4" type="video/mp4">
 </video>
 
+<button id="skipBtn">Skip</button>
+
 <script>
+const startScreen = document.getElementById('startScreen');
+const video = document.getElementById('introVideo');
+const skipBtn = document.getElementById('skipBtn');
+
+let started = false;
+
 function startIntro() {
-  const screen = document.getElementById('startScreen');
-  const video = document.getElementById('introVideo');
+  if (started) return;
+  started = true;
 
-  screen.style.display = 'none';
-  video.style.display = 'block';
+  // Fade out splash
+  startScreen.style.opacity = "0";
 
-  video.muted = false;
+  setTimeout(() => {
+    startScreen.style.display = "none";
 
-  const playPromise = video.play();
+    // Show video
+    video.style.opacity = "1";
+    skipBtn.style.display = "block";
 
-  if (playPromise !== undefined) {
-    playPromise.catch(error => {
-      console.log("Playback failed:", error);
-      alert("Tap again to play");
-    });
-  }
+    // IMPORTANT: must be triggered by user gesture
+    video.muted = false;
 
-  video.onended = () => {
+    const playPromise = video.play();
+
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // fallback: force play again
+        video.muted = false;
+        video.play();
+      });
+    }
+
+  }, 600);
+}
+
+// Handle tap/click (works on mobile + desktop)
+document.body.addEventListener('click', startIntro);
+document.body.addEventListener('touchstart', startIntro);
+
+// Redirect when video ends
+video.addEventListener('ended', () => {
+  fadeAndRedirect();
+});
+
+// Skip button
+skipBtn.onclick = fadeAndRedirect;
+
+function fadeAndRedirect() {
+  video.style.opacity = "0";
+
+  setTimeout(() => {
     window.location.href = "https://disneynow.com";
-  };
+  }, 600);
 }
 </script>
 
